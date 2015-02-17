@@ -26,9 +26,9 @@ module Nifty
       # fields on this model
       before_validation do
         if self.uploaded_file
-          self.data = self.uploaded_file.tempfile.read
-          self.file_name = self.uploaded_file.original_filename
-          self.file_type = self.uploaded_file.content_type
+          self.data = Base64.encode64(self.uploaded_file.is_a?(File) ? self.uploaded_file.read : self.uploaded_file.tempfile.read)
+          self.file_name = self.uploaded_file.is_a?(File) ? File.basename(self.uploaded_file.to_path) : self.uploaded_file.original_filename
+          self.file_type =  self.uploaded_file.is_a?(File) ? Mime::Type.lookup_by_extension(File.extname(self.uploaded_file.to_path).gsub(".", "")).to_s : self.uploaded_file.content_type
           self.digest = Digest::MD5.hexdigest(self.data)
         end
       end

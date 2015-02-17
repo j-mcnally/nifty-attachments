@@ -31,7 +31,7 @@ module Nifty
 
           define_method "#{name}_file=" do |file|
             instance_variable_set("@#{name}_file", file)
-            if file.is_a?(ActionDispatch::Http::UploadedFile)
+            if file.is_a?(ActionDispatch::Http::UploadedFile) || file.is_a?(File)
               @pending_attachments ||= []
               @pending_attachments << {:role => name, :file => file}
             else
